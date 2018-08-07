@@ -1,0 +1,48 @@
+{
+  "posts": [
+    {
+      "id": 1,
+      "title": "json-server",
+      "author": "typicode"
+    }
+  ],
+  "comments": [
+    {
+      "id": 1,
+      "body": "some comment",
+      "postId": 1
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "email": "poulramm@gmail.com",
+      "password": "666666"
+    },
+    {
+      "email": "test@test.com",
+      "password": "111",
+      "id": 2
+    }
+  ],
+  "todo": [
+    {
+      "id": 1,
+      "name": "sdfsf",
+      "title": "sdf",
+      "description": "sdfsdf",
+      "progress": "Not start",
+      "userId": 1,
+      "role": "Admin"
+    },
+    {
+      "id": 2,
+      "name": "dsfs",
+      "title": "sdfs",
+      "description": "sdfsdf",
+      "progress": "In progress",
+      "userId": 1,
+      "role": "User"
+    }
+  ]
+}
