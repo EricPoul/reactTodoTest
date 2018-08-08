@@ -16,8 +16,8 @@
   "users": [
     {
       "id": 1,
-      "email": "poulramm@gmail.com",
-      "password": "666666",
+      "email": "admin@admin.com",
+      "password": "admin",
       "role": "Admin"
     },
     {
@@ -37,11 +37,6 @@
       "password": "111",
       "id": 4,
       "role": "User"
-    },
-    {
-      "email": "poulramm@gmail.comm",
-      "password": "111",
-      "id": 5
     }
   ],
   "todo": [
@@ -51,8 +46,8 @@
       "description": "gfj",
       "progress": "Completed",
       "userId": 1,
-      "userDo": "poulramm@gmail.com",
-      "create": "poulramm@gmail.com",
+      "userDo": "admin@admin.com",
+      "create": "admin@admin.com",
       "role": "Admin"
     },
     {
@@ -61,9 +56,9 @@
       "title": "Some title",
       "description": "asd",
       "progress": "Not start",
-      "userDo": "poulramm@gmail.com",
+      "userDo": "admin@admin.com",
       "role": "Admin",
-      "create": "poulramm@gmail.com",
+      "create": "admin@admin.com",
       "userId": 1
     },
     {
@@ -74,7 +69,7 @@
       "progress": "In progress",
       "userDo": "1234@tt.com",
       "role": "User",
-      "create": "poulramm@gmail.com",
+      "create": "admin@admin.com",
       "userId": 1
     },
     {
@@ -84,7 +79,7 @@
       "progress": "",
       "userId": 1,
       "userDo": "",
-      "create": "poulramm@gmail.com",
+      "create": "admin@admin.com",
       "role": ""
     }
   ]
