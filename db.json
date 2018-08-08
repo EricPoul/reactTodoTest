@@ -14,7 +14,78 @@
     }
   ],
   "users": [
+    {
+      "id": 1,
+      "email": "poulramm@gmail.com",
+      "password": "666666",
+      "role": "Admin"
+    },
+    {
+      "email": "test@test.com",
+      "password": "111",
+      "id": 2,
+      "role": "User"
+    },
+    {
+      "email": "test@test.test",
+      "password": "111",
+      "role": "User",
+      "id": 3
+    },
+    {
+      "email": "1234@tt.com",
+      "password": "111",
+      "id": 4,
+      "role": "User"
+    },
+    {
+      "email": "poulramm@gmail.comm",
+      "password": "111",
+      "id": 5
+    }
   ],
   "todo": [
+    {
+      "id": 3,
+      "name": "Task number one",
+      "description": "gfj",
+      "progress": "Completed",
+      "userId": 1,
+      "userDo": "poulramm@gmail.com",
+      "create": "poulramm@gmail.com",
+      "role": "Admin"
+    },
+    {
+      "id": 4,
+      "name": "Some taskhgf",
+      "title": "Some title",
+      "description": "asd",
+      "progress": "Not start",
+      "userDo": "poulramm@gmail.com",
+      "role": "Admin",
+      "create": "poulramm@gmail.com",
+      "userId": 1
+    },
+    {
+      "id": 5,
+      "name": "erter",
+      "title": "ertert",
+      "description": "erter",
+      "progress": "In progress",
+      "userDo": "1234@tt.com",
+      "role": "User",
+      "create": "poulramm@gmail.com",
+      "userId": 1
+    },
+    {
+      "id": 6,
+      "name": "jhg",
+      "description": "",
+      "progress": "",
+      "userId": 1,
+      "userDo": "",
+      "create": "poulramm@gmail.com",
+      "role": ""
+    }
   ]
 }

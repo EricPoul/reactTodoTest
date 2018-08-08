@@ -12,13 +12,13 @@ class ToDoCard extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            list: props.data
+            list: [] 
         };
     }
 
     static getDerivedStateFromProps(nextProps) {
         return {
-            list: nextProps.data
+            list: nextProps.list
         };
       }
     
@@ -43,7 +43,6 @@ class ToDoCard extends PureComponent {
     }
 
     render() {
-        console.log(this.state.list)
         return (
             <div className="container p-4">
                 {
@@ -54,8 +53,12 @@ class ToDoCard extends PureComponent {
                                 <button className={`btn btn-` + this.setClass(el.progress)} disabled>{el.progress}</button>  
                             </CardHeader>
                             <CardBody>
-                                <CardTitle>{el.title}</CardTitle>
-                                <CardText><span className="role">{el.role}</span> need to do: {el.description}</CardText>
+                                <CardTitle>
+                                Task create: <span className="role">{el.create}</span> 
+                                    <br/>
+                                    {el.title}
+                                </CardTitle>
+                                <CardText><span className="role">{el.userDo}</span> need to do: {el.description}</CardText>
                             </CardBody>
                             <CardFooter className="text-muted">
                                 <Link className="card-link" to={`/dashboard/edit/${el.id}`}>Edit</Link>
@@ -70,17 +73,11 @@ class ToDoCard extends PureComponent {
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        todos: state.todos
-    }
-}
 const mapDispatchToProps = (dispatch) => {
     return {
         removeTodo: (id) => dispatch({ type: 'DELETE_TODO', id }),
-       // editTodo: (todo) => dispatch({ type: 'EDIT_TODO', todo })
     }
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(ToDoCard);
+export default connect(mapDispatchToProps)(ToDoCard);

@@ -32,5 +32,12 @@ const todoReduser = (state = [], action) => {
     return state
   }
 
-  const redusers = combineReducers({ todos: todoReduser, user: logReduser });
+  const usersReduser = (state = [], action) => {
+    if (action.type === 'SET_USERS') {
+      return action.users
+    }
+    return state
+  }
+
+  const redusers = combineReducers({ todos: todoReduser, user: logReduser, users: usersReduser });
   export default redusers 

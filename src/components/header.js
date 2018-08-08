@@ -7,19 +7,18 @@ import {
   Navbar,
   NavbarToggler,
   Nav,
-  NavItem,  UncontrolledDropdown,
+  NavItem, UncontrolledDropdown,
   DropdownToggle,
   DropdownMenu,
   DropdownItem
 } from 'reactstrap';
 import { withRouter } from 'react-router'
 
-
+const roleAdmin = ['Admin', 'Root']
 
 class Header extends PureComponent {
   constructor(props) {
     super(props);
-    console.log(props)
 
     this.toggle = this.toggle.bind(this);
     this.state = {
@@ -35,13 +34,11 @@ class Header extends PureComponent {
   }
 
   logout() {
-    console.log(this.props)
     this.props.logout();
     this.props.history.push(`/login`)
   }
 
   static getDerivedStateFromProps(nextProps) {
-    console.log(nextProps)
     return {
       user: nextProps.user,
       login: nextProps.user ? true : false
@@ -56,26 +53,28 @@ class Header extends PureComponent {
           <NavbarToggler onClick={this.toggle} />
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav className="w-100" navbar>
-              <NavItem>
-                <Link className="nav-link" to="/dashboard/create">Create Task</Link>
-              </NavItem>
-                { this.state.login ?
-                    <UncontrolledDropdown nav inNavbar className="ml-auto">
-                    <DropdownToggle nav caret>
-                      { this.state.user.email }
-                    </DropdownToggle>
-                    <DropdownMenu right>
-                      <DropdownItem>
-                        Option 2
+              {
+                this.props.user && roleAdmin.includes(this.props.user.role) ? <NavItem>
+                  <Link className="nav-link" to="/dashboard/create">Create Task</Link>
+                </NavItem> : null
+              }
+              {this.state.login ?
+                <UncontrolledDropdown nav inNavbar className="ml-auto">
+                  <DropdownToggle nav caret>
+                    {this.state.user.email}
+                  </DropdownToggle>
+                  <DropdownMenu right>
+                    <DropdownItem>
+                      Option 2
                       </DropdownItem>
-                      <DropdownItem divider />
-                      <DropdownItem  onClick={() => this.logout()}>
-                        Logout
+                    <DropdownItem divider />
+                    <DropdownItem onClick={() => this.logout()}>
+                      Logout
                       </DropdownItem>
-                    </DropdownMenu>
-                  </UncontrolledDropdown>
-                    : <NavItem className="ml-auto"><Link className="nav-link" to="/singup">Sing up</Link></NavItem>
-                }
+                  </DropdownMenu>
+                </UncontrolledDropdown>
+                : <NavItem className="ml-auto"><Link className="nav-link" to="/singup">Sing up</Link></NavItem>
+              }
             </Nav>
           </Collapse>
         </Navbar>
@@ -86,12 +85,11 @@ class Header extends PureComponent {
 
 const mapStateToProps = (share) => {
   return {
-    user: share.user
   }
 }
 const mapDispatchToProps = (dispatch) => {
   return {
-      logout: () => dispatch({ type: 'LOGOUT' }),
+    logout: () => dispatch({ type: 'LOGOUT' }),
   }
 }
 

@@ -8,28 +8,27 @@ import {
 import '../styles/todo.scss';
 import API from '../api';
 
-
+const roleAdmin = ['Admin', 'Root']
 class Login extends PureComponent {
     constructor(props) {
         super(props);
-        if (props.match.path === '/singup') {
-            this.state = {
-                form: {
-                    email: '',
-                    password: '',
-                    confirmpass: '',
-                    id: null
-                }
-            }
-        } else {
-            this.state = {
-                form: {
-                    email: '',
-                    password: '',
-                    id: null
-                }
+        this.state = {
+            form: {
+                email: '',
+                password: ''
             }
         }
+        if (props.match.path === '/singup') {
+            this.state.form = { ...this.state.form, confirmpass: '' }
+        }
+        this.props.history.listen((res) => {
+            this.setState({
+                form: {
+                    email: '',
+                    password: ''
+                }
+            });
+        })
     }
 
     handleChange(event, type) {
@@ -45,8 +44,9 @@ class Login extends PureComponent {
                 API.get(`/users`).then(res => {
                     const user = res.data.find(el => { return el.email === form.email });
                     if (!user) {
-                        API.post(`/users`, this.createBody(form)).then(res => {
-                            this.login(form)
+                        const body = {...form, role: 'User'}
+                        API.post(`/users`, this.createBody(body)).then(res => {
+                            this.login(body)
                         })
                     } else {
                         console.log('user is already have')
@@ -62,10 +62,19 @@ class Login extends PureComponent {
         API.get(`/users`).then(res => {
             const user = res.data.find(el => { return el.email === form.email });
             if (user !== undefined && user.password === form.password) {
-                form.id = user.id
+                form = { ...form, id: user.id, role: user.role }
                 this.setState({ form });
                 this.props.logIn(JSON.stringify(form))
-                this.props.history.push(`/dashboard/list`)
+                console.log(form)
+                API.get(`todo`).then(res => {
+                    let list = res.data
+                    if(!roleAdmin.includes(form.role)) {
+                        list = res.data.filter(el => el.userDo === form.email)
+                    }
+                    this.props.setTodos(list)
+                    console.log(form)
+                    this.props.history.push(`/dashboard/list`)
+                })
             }
         })
     }
@@ -77,13 +86,26 @@ class Login extends PureComponent {
         }
     }
 
+    forRender() {
+        return (
+            <FormGroup>
+                <Label for="confirm">Confirm password</Label>
+                <Input type="password" name="password" id="confirm" placeholder="password" value={this.state.form.confirmpassword}
+                    onChange={(e) => this.handleChange(e, 'confirmpass')} />
+            </FormGroup>
+        );
+    }
+
     render() {
-        if (this.props.match.path === '/login') {
-            return (
+        return (
                 <div className="container form-container">
                     <Card>
                         <CardBody>
-                            <CardTitle>Login</CardTitle>
+                            <CardTitle>
+                                {
+                                    this.props.match.path === '/singup' ? 'Sing up' : 'Login'
+                                }
+                            </CardTitle>
                             <Form onSubmit={(e) => this.loginSingup(e, this.state.form)}>
                                 <FormGroup>
                                     <Label for="nameTask">Email</Label>
@@ -95,53 +117,28 @@ class Login extends PureComponent {
                                     <Input type="password" name="password" id="titleTask" placeholder="password" value={this.state.form.password}
                                         onChange={(e) => this.handleChange(e, 'password')} />
                                 </FormGroup>
+                                {
+                                    this.props.match.path === '/singup' ? this.forRender() : null
+                                }
                                 <Button className="btn-success">Submit</Button>
                             </Form>
                         </CardBody>
                     </Card>
                 </div>
             );
-        } else {
-            return (
-                <div className="container form-container">
-                    <Card>
-                        <CardBody>
-                            <CardTitle>Sing up</CardTitle>
-                            <Form onSubmit={(e) => this.loginSingup(e, this.state.form)}>
-                                <FormGroup>
-                                    <Label for="email">Email</Label>
-                                    <Input type="email" name="email" require="true" id="email" placeholder="example@gmail.com" value={this.state.form.email}
-                                        onChange={(e) => this.handleChange(e, 'email')} />
-                                </FormGroup>
-                                <FormGroup>
-                                    <Label for="password">Password</Label>
-                                    <Input type="password" name="password" id="password" placeholder="password" value={this.state.form.password}
-                                        onChange={(e) => this.handleChange(e, 'password')} />
-                                </FormGroup>
-                                <FormGroup>
-                                    <Label for="confirm">Confirm password</Label>
-                                    <Input type="password" name="password" id="confirm" placeholder="password" value={this.state.form.confirmpassword}
-                                        onChange={(e) => this.handleChange(e, 'confirmpass')} />
-                                </FormGroup>
-                                <Button className="btn-success">Submit</Button>
-                            </Form>
-                        </CardBody>
-                    </Card>
-                </div>
-            );
-        }
     }
 }
 
 const mapStateToProps = (share) => {
     return {
-        list: share.todos,
-        user: share.user
+        user: share.user,
+        list: share.todos
     }
 }
 const mapDispatchToProps = (dispatch) => {
     return {
         logIn: (login) => dispatch({ type: 'LOGIN', login }),
+        setTodos: (todos) => dispatch({ type: 'SET_TODOS', todos }),
     }
 }
 
