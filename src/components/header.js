@@ -16,16 +16,10 @@ import { withRouter } from 'react-router';
 import Roles from '../model/roles'
 
 class Header extends PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.toggle = this.toggle.bind(this);
-    this.state = {
-      user: this.props.user,
-      login: this.props.user ? true : false,
-      isOpen: false
-    };
-  }
+  state = {
+    login: this.props.user ? true : false,
+    isOpen: false
+  };
   toggle() {
     this.setState({
       isOpen: !this.state.isOpen
@@ -33,15 +27,17 @@ class Header extends PureComponent {
   }
 
   logout() {
+    this.setState({
+      login: false
+    })
     this.props.logout();
     this.props.history.push(`/login`)
   }
 
-  static getDerivedStateFromProps(nextProps) {
-    return {
-      user: nextProps.user,
-      login: nextProps.user ? true : false
-    };
+  componentWillUpdate(props) {
+    this.setState({
+      login: props.user ? true : false
+    })
   }
 
   render() {
@@ -60,7 +56,7 @@ class Header extends PureComponent {
               {this.state.login ?
                 <UncontrolledDropdown nav inNavbar className="ml-auto">
                   <DropdownToggle nav caret>
-                    {this.state.user.email}
+                    {this.props.user.email}
                   </DropdownToggle>
                   <DropdownMenu right>
                     <DropdownItem>

@@ -9,11 +9,8 @@ import CreateEditForm from './ce-form';
 
 
 class CreateEdit extends PureComponent {
-    constructor(props) {
-        super(props);
-        this.state = {
-            title: 'Create new task'
-        }
+    state = {
+        title: 'Create new task'
     }
     componentDidMount() {
         if (this.props.match.params.id) {
@@ -33,8 +30,6 @@ class CreateEdit extends PureComponent {
                         <CreateEditForm users={this.props.users} list={this.props.list} /> 
                     </CardBody>
                 </Card>
-
-
             </div>
         );
     }

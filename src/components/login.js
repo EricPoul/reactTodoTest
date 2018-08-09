@@ -7,8 +7,8 @@ import {
 } from 'reactstrap';
 import '../styles/todo.scss';
 import API from '../api';
+import Roles from '../model/roles'
 
-const roleAdmin = ['Admin', 'Root']
 class Login extends PureComponent {
     constructor(props) {
         super(props);
@@ -21,14 +21,6 @@ class Login extends PureComponent {
         if (props.match.path === '/singup') {
             this.state.form = { ...this.state.form, confirmpass: '' }
         }
-        // this.props.history.listen((res) => {
-        //     this.setState({
-        //         form: {
-        //             email: '',
-        //             password: ''
-        //         }
-        //     });
-        // })
     }
 
     componentWillUpdate(nextProps, state) {
@@ -89,7 +81,7 @@ class Login extends PureComponent {
                 console.log(form)
                 API.get(`todo`).then(res => {
                     let list = res.data
-                    if (!roleAdmin.includes(form.role)) {
+                    if (!Roles.includes(form.role)) {
                         list = res.data.filter(el => el.userDo === form.email)
                     }
                     this.props.setTodos(list)

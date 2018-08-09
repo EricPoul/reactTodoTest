@@ -1,18 +1,14 @@
 import React, { Component } from 'react';
 import './App.scss';
 import { connect } from 'react-redux';
-import { createStore } from 'redux';
 import { withRouter } from 'react-router';
-import Redusers from './reduser';
 import Login from './components/login';
 import ToDo from './components/todo';
 import CreateEdit from './components/create-edit';
 import { Route, Redirect, Switch } from 'react-router-dom';
 import Header from './components/header';
 import API from './api';
-
-const store = createStore(Redusers);
-window.store = store;
+import Roles from './model/roles'
 
 const SwitchRoutes = (props, rest) => <Switch>
   <Route path={`${props.match.url}/list`} render={(props) => (
@@ -39,29 +35,13 @@ const MainRoute = ({ component: Component, ...rest }) => {
 }
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      list: [],
-      user: null,
-      users: []
-    }
-  }
-
-  static getDerivedStateFromProps(nextProps) {
-    return {
-      list: nextProps.todos,
-      user: nextProps.user,
-      users: nextProps.users
-    };
-  }
+  state = {}
 
   componentDidMount() {
-    const roleAdmin = ['Admin', 'Root']
     API.get(`todo`).then(res => {
       let list = res.data
-      if (this.props.user && !roleAdmin.includes(this.props.user.role)) {
-        list = res.data.filter(el => el.userDo === this.props.user.email)
+      if (this.props.user && !Roles.includes(this.props.user.role)) {
+        list = list.filter(el => el.userDo === this.props.user.email)
       }
       this.props.setTodos(list)
     })
@@ -73,9 +53,9 @@ class App extends Component {
   render() {
     return (
       <div>
-        <Header user={this.state.user} />
+        <Header user={this.props.user} />
         <Switch>
-          <MainRoute path='/dashboard' list={this.state.list} users={this.state.users} user={this.state.user} />
+          <MainRoute path='/dashboard' list={this.props.todos} users={this.props.users} user={this.props.user} />
           <Route path='/login' component={Login} />
           <Route path='/singup' component={Login} />
           <Redirect to='/dashboard/' />

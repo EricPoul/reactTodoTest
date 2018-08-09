@@ -10,19 +10,6 @@ import Roles from '../model/roles'
 
 
 class ToDoCard extends PureComponent {
-    constructor(props) {
-        super(props);
-        this.state = {
-            list: [] 
-        };
-    }
-
-    static getDerivedStateFromProps(nextProps) {
-        return {
-            list: nextProps.list
-        };
-      }
-    
     setClass(progress) {
         switch(progress) {
             case 'Not start': {
@@ -47,7 +34,7 @@ class ToDoCard extends PureComponent {
         return (
             <div className="container p-4">
                 {
-                    this.state.list.map(el => (
+                    this.props.list.map(el => (
                         <Card key={el.id}>
                             <CardHeader tag="h3">
                                 {el.name}
