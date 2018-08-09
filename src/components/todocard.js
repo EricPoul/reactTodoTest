@@ -6,6 +6,7 @@ import {
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import API from '../api';
+import Roles from '../model/roles'
 
 
 class ToDoCard extends PureComponent {
@@ -54,16 +55,18 @@ class ToDoCard extends PureComponent {
                             </CardHeader>
                             <CardBody>
                                 <CardTitle>
-                                Task create: <span className="role">{el.create}</span> 
+                                Create: <span className="role">{el.create}</span> 
                                     <br/>
                                     {el.title}
                                 </CardTitle>
-                                <CardText><span className="role">{el.userDo}</span> need to do: {el.description}</CardText>
+                                <CardText><span className="role">{el.userDo}</span> need to do: <br/> {el.description}</CardText>
                             </CardBody>
                             <CardFooter className="text-muted">
                                 <Link className="card-link" to={`/dashboard/edit/${el.id}`}>Edit</Link>
-                                <button className="btn btn-danger"
-                                    onClick={() => this.deleteTask(el.id) }>Delete</button> 
+                                {  
+                                    Roles.includes(this.props.user.role) ? <button className="btn btn-danger"
+                                        onClick={() => this.deleteTask(el.id) }>Delete</button> : null
+                                }
                             </CardFooter>
                         </Card>
                     ))

@@ -21,20 +21,41 @@ class Login extends PureComponent {
         if (props.match.path === '/singup') {
             this.state.form = { ...this.state.form, confirmpass: '' }
         }
-        this.props.history.listen((res) => {
-            this.setState({
-                form: {
-                    email: '',
-                    password: ''
-                }
-            });
-        })
+        // this.props.history.listen((res) => {
+        //     this.setState({
+        //         form: {
+        //             email: '',
+        //             password: ''
+        //         }
+        //     });
+        // })
+    }
+
+    componentWillUpdate(nextProps, state) {
+        if (this.props.match.path !== nextProps.match.path) {
+            if (nextProps.match.path === '/singup') {
+                this.setState({
+                    form: {
+                        email: '',
+                        password: '',
+                        confirmpass: ''
+                    }
+                });
+            } else {
+                this.setState({
+                    form: {
+                        email: '',
+                        password: ''
+                    }
+                });
+            }
+        }
     }
 
     handleChange(event, type) {
-        const state = this.state;
-        state.form[type] = event.target.value;
-        this.setState({ state });
+        const form = { ...this.state.form };
+        form[type] = event.target.value;
+        this.setState({ form });
     }
 
     loginSingup(e, form) {
@@ -44,7 +65,7 @@ class Login extends PureComponent {
                 API.get(`/users`).then(res => {
                     const user = res.data.find(el => { return el.email === form.email });
                     if (!user) {
-                        const body = {...form, role: 'User'}
+                        const body = { ...form, role: 'User' }
                         API.post(`/users`, this.createBody(body)).then(res => {
                             this.login(body)
                         })
@@ -62,17 +83,17 @@ class Login extends PureComponent {
         API.get(`/users`).then(res => {
             const user = res.data.find(el => { return el.email === form.email });
             if (user !== undefined && user.password === form.password) {
-                form = { ...form, id: user.id, role: user.role }
                 this.setState({ form });
-                this.props.logIn(JSON.stringify(form))
+                form = { ...form, id: user.id, role: user.role }
+                this.props.logIn(form)
                 console.log(form)
                 API.get(`todo`).then(res => {
                     let list = res.data
-                    if(!roleAdmin.includes(form.role)) {
+                    if (!roleAdmin.includes(form.role)) {
                         list = res.data.filter(el => el.userDo === form.email)
                     }
                     this.props.setTodos(list)
-                    console.log(form)
+                    console.log(form, this.props)
                     this.props.history.push(`/dashboard/list`)
                 })
             }
@@ -98,34 +119,34 @@ class Login extends PureComponent {
 
     render() {
         return (
-                <div className="container form-container">
-                    <Card>
-                        <CardBody>
-                            <CardTitle>
-                                {
-                                    this.props.match.path === '/singup' ? 'Sing up' : 'Login'
-                                }
-                            </CardTitle>
-                            <Form onSubmit={(e) => this.loginSingup(e, this.state.form)}>
-                                <FormGroup>
-                                    <Label for="nameTask">Email</Label>
-                                    <Input type="email" name="email" require="true" id="nameTask" placeholder="example@gmail.com" value={this.state.form.email}
-                                        onChange={(e) => this.handleChange(e, 'email')} />
-                                </FormGroup>
-                                <FormGroup>
-                                    <Label for="titleTask">Password</Label>
-                                    <Input type="password" name="password" id="titleTask" placeholder="password" value={this.state.form.password}
-                                        onChange={(e) => this.handleChange(e, 'password')} />
-                                </FormGroup>
-                                {
-                                    this.props.match.path === '/singup' ? this.forRender() : null
-                                }
-                                <Button className="btn-success">Submit</Button>
-                            </Form>
-                        </CardBody>
-                    </Card>
-                </div>
-            );
+            <div className="container form-container">
+                <Card>
+                    <CardBody>
+                        <CardTitle>
+                            {
+                                this.props.match.path === '/singup' ? 'Sing up' : 'Login'
+                            }
+                        </CardTitle>
+                        <Form onSubmit={(e) => this.loginSingup(e, this.state.form)}>
+                            <FormGroup>
+                                <Label for="nameTask">Email</Label>
+                                <Input type="email" name="email" require="true" id="nameTask" placeholder="example@gmail.com" value={this.state.form.email}
+                                    onChange={(e) => this.handleChange(e, 'email')} />
+                            </FormGroup>
+                            <FormGroup>
+                                <Label for="titleTask">Password</Label>
+                                <Input type="password" name="password" id="titleTask" placeholder="password" value={this.state.form.password}
+                                    onChange={(e) => this.handleChange(e, 'password')} />
+                            </FormGroup>
+                            {
+                                this.props.match.path === '/singup' ? this.forRender() : null
+                            }
+                            <Button className="btn-success">Submit</Button>
+                        </Form>
+                    </CardBody>
+                </Card>
+            </div>
+        );
     }
 }
 

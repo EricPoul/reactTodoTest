@@ -23,11 +23,11 @@ const todoReduser = (state = [], action) => {
   const user = JSON.parse(localStorage.getItem('user')) || null;
   const logReduser = (state = user, action) => {
     if (action.type === 'LOGIN') {
-      localStorage.setItem('user', action.login)
-      return JSON.parse(localStorage.getItem('user'))
+      localStorage.setItem('user', JSON.stringify(action.login))
+      return action.login
     } else if (action.type === 'LOGOUT') {
       localStorage.removeItem('user')
-      return JSON.parse(localStorage.getItem('user'))
+      return null
     }
     return state
   }

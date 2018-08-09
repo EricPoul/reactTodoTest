@@ -16,7 +16,7 @@ window.store = store;
 
 const SwitchRoutes = (props, rest) => <Switch>
   <Route path={`${props.match.url}/list`} render={(props) => (
-    <ToDo {...props} list={rest.list} />
+    <ToDo {...props} list={rest.list} user={rest.user}/>
   )} />
   <Route path={`${props.match.url}/create`} render={(props) => (
     <CreateEdit {...props} list={rest.list} users={rest.users} />
@@ -32,11 +32,11 @@ const RedirectRoute = (props) => <Redirect to={{
   state: { from: props.location }
 }} />
 
-const MainRoute = ({ component: Component, ...rest }) => (
-  <Route path={`${this.props}/`} {...rest} render={(props) => (
-    store.getState().user ? SwitchRoutes(props, rest) : RedirectRoute(props)
+const MainRoute = ({ component: Component, ...rest }) => {
+  return <Route path={`${this.props}/`} {...rest} render={(props) => (
+    rest.user ? SwitchRoutes(props, rest) : RedirectRoute(props)
   )} />
-)
+}
 
 class App extends Component {
   constructor(props) {
@@ -75,7 +75,7 @@ class App extends Component {
       <div>
         <Header user={this.state.user} />
         <Switch>
-          <MainRoute path='/dashboard' list={this.state.list} users={this.state.users} />
+          <MainRoute path='/dashboard' list={this.state.list} users={this.state.users} user={this.state.user} />
           <Route path='/login' component={Login} />
           <Route path='/singup' component={Login} />
           <Redirect to='/dashboard/' />

@@ -1,13 +1,11 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import '../styles/todo.scss';
-import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import {
     Card, CardBody,
     CardTitle
 } from 'reactstrap';
 import CreateEditForm from './ce-form';
-import API from '../api';
 
 
 class CreateEdit extends PureComponent {
@@ -18,7 +16,6 @@ class CreateEdit extends PureComponent {
         }
     }
     componentDidMount() {
-        console.log(this.props)
         if (this.props.match.params.id) {
             this.setState({
                 title: 'Edit task'

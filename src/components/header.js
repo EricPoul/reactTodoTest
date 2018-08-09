@@ -12,9 +12,8 @@ import {
   DropdownMenu,
   DropdownItem
 } from 'reactstrap';
-import { withRouter } from 'react-router'
-
-const roleAdmin = ['Admin', 'Root']
+import { withRouter } from 'react-router';
+import Roles from '../model/roles'
 
 class Header extends PureComponent {
   constructor(props) {
@@ -54,7 +53,7 @@ class Header extends PureComponent {
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav className="w-100" navbar>
               {
-                this.props.user && roleAdmin.includes(this.props.user.role) ? <NavItem>
+                this.props.user && Roles.includes(this.props.user.role) ? <NavItem>
                   <Link className="nav-link" to="/dashboard/create">Create Task</Link>
                 </NavItem> : null
               }

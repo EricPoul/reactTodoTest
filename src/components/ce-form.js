@@ -3,11 +3,8 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import '../styles/todo.scss';
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
-import {
-    Card, CardBody,
-    CardTitle
-} from 'reactstrap';
 import API from '../api';
+import Roles from '../model/roles'
 
 
 class CreateEditForm extends PureComponent {
@@ -21,42 +18,28 @@ class CreateEditForm extends PureComponent {
                 userDo: '',
                 role: ''
             },
-            selectUsers: []
+            selectUsers: [],
+            route: this.props.match.path
         };
     }
 
-    componentDidMount(props) {
-        this.setState({
-            task: this.props.list.length > 0 && this.props.match.params.id ? this.props.list.find((el) => el.id === +this.props.match.params.id) : {
-                name: '',
-                description: '',
-                progress: '',
-                userDo: '',
-                role: ''
-            },
-            selectUsers: this.props.users.filter(el => el.role === this.state.task.role)
-        });
+    componentDidMount() {
+        const role = this.setRole(this.props)
+        this.setStates(this.props, role)
     }
 
 
 
-    componentWillUpdate(nextProps, state) {
-        console.log(nextProps, state)
-        const role = nextProps.list.length > 0 && nextProps.match.params.id ? nextProps.list.find((el) => el.id === +nextProps.match.params.id).role : ''
+    componentWillUpdate(nextProps) {
+        const role = this.setRole(nextProps)
         if (nextProps.list !== this.props.list) {
-            this.setState({
-                task: nextProps.list.length > 0 && nextProps.match.params.id ? nextProps.list.find((el) => el.id === +nextProps.match.params.id) : {
-                    name: '',
-                    description: '',
-                    progress: '',
-                    userDo: '',
-                    role: ''
-                }
-            });
+            this.setStates(nextProps)
         } if (nextProps.users !== this.props.users) {
             this.setState({
                 selectUsers: nextProps.users.filter(el => el.role === role)
             });
+        } if (this.state.route !== nextProps.match.path) {
+            this.setStates(this.props, role, nextProps.match.path);
         }
     }
 
@@ -76,12 +59,10 @@ class CreateEditForm extends PureComponent {
                 task
             });
         }
-        console.log(this.state, this.props)
     }
 
     updateTodo(e) {
         e.preventDefault();
-        console.log(this.props)
         if (this.props.match.path === '/dashboard/create') {
             API.post('/todo', this.createBody(this.state.task)).then(res => {
                 this.props.addTodo(res.data)
@@ -107,10 +88,28 @@ class CreateEditForm extends PureComponent {
         }
     }
 
+    setStates(props, role = null, route = null) {
+        this.setState({
+            task: props.list.length > 0 && props.match.params.id ? props.list.find((el) => el.id === +props.match.params.id) : {
+                name: '',
+                description: '',
+                progress: '',
+                userDo: '',
+                role: ''
+            },
+            selectUsers: role ? props.users.filter(el => el.role === role) : this.state.selectUsers,
+            route: route ? route : this.state.route
+        });
+    }
+
+    setRole(props) {
+        return props.list.length > 0 && props.match.params.id ? props.list.find((el) => el.id === +props.match.params.id).role : ''
+    }
+
     renderSelect() {
         return <FormGroup>
             <Label for="userDoTask">User</Label>
-            <Input type="select" name="userDo" id="userDoTask" value={this.state.task.userDo}
+            <Input type="select" name="userDo" id="userDoTask" disabled={!Roles.includes(this.props.user.role)} value={this.state.task.userDo}
                 onChange={(e) => this.handleChange(e)}>
                 <option className="def-opt" disabled value="">Select value</option>
                 {
@@ -123,18 +122,16 @@ class CreateEditForm extends PureComponent {
     }
 
     render() {
-        console.log(this.state.task)
         return (
-
             <Form onSubmit={(e) => this.updateTodo(e)}>
                 <FormGroup>
                     <Label for="nameTask">Task name</Label>
-                    <Input type="text" name="name" require="true" id="nameTask" placeholder="Some task name" value={this.state.task.name}
+                    <Input type="text" name="name" require="true" id="nameTask" disabled={!Roles.includes(this.props.user.role)} placeholder="Some task name" value={this.state.task.name}
                         onChange={(e) => this.handleChange(e, 'name')} />
                 </FormGroup>
                 <FormGroup>
                     <Label for="roleTask">Role</Label>
-                    <Input type="select" name="role" id="roleTask" value={this.state.task.role}
+                    <Input type="select" name="role" id="roleTask" disabled={!Roles.includes(this.props.user.role)} value={this.state.task.role}
                         onChange={(e) => this.handleChange(e)}>
                         <option className="def-opt" disabled value="">Select value</option>
                         <option value="Admin">Admin</option>
@@ -156,12 +153,11 @@ class CreateEditForm extends PureComponent {
                 </FormGroup>
                 <FormGroup>
                     <Label for="descrTask">Description</Label>
-                    <Input type="textarea" name="description" id="descrTask" value={this.state.task.description}
+                    <Input type="textarea" name="description" id="descrTask" disabled={!Roles.includes(this.props.user.role)} value={this.state.task.description}
                         onChange={(e) => this.handleChange(e, 'description')} />
                 </FormGroup>
                 <Button className="btn-success">Submit</Button>
             </Form>
-
         );
     }
 }
